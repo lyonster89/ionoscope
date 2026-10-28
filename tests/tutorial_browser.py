@@ -23,8 +23,18 @@ with sync_playwright() as p:
         page.goto(URL,wait_until='domcontentloaded')
         expect(page.locator('#metricDistance')).not_to_have_text('—')
         ids=page.locator('[id]').evaluate_all('(els)=>els.map(e=>e.id)')
-        page.get_by_role('link',name='Open practical tutorial',exact=True).click()
+        simulator=page
+        simulator.locator('input[data-field="frequency"][type="number"]').fill('18.1')
+        with simulator.expect_popup() as popup:
+            simulator.get_by_role('link',name='Open practical tutorial',exact=True).click()
+        page=popup.value
+        page.on('pageerror',lambda e:errors.append(str(e)))
+        page.on('response',lambda r:failed.append(r.url) if r.status>=400 and r.url.startswith(URL) else None)
+        page.route('https://**/*',lambda r:r.abort())
+        if URL.startswith('https://'):page.route(URL+'**',lambda r:r.continue_())
+        page.wait_for_load_state('load')
         expect(page).to_have_url(urljoin(URL,'tutorial.html'))
+        check(not simulator.is_closed() and simulator.locator('input[data-field="frequency"][type="number"]').input_value()=='18.1',f'{width}: tutorial opens separately and preserves the experiment')
         check(page.locator('main section').count()==9,f'{width}: nine tutorial sections delivered')
         check(page.locator('.contents nav a').count()==9,f'{width}: complete contents navigation')
         check(page.evaluate('document.documentElement.scrollWidth<=innerWidth'),f'{width}: no horizontal overflow')
@@ -51,6 +61,7 @@ with sync_playwright() as p:
         expect(page.locator('#worldMap canvas')).to_be_visible()
         check(not errors and not failed,f'{width}: return to simulator; no runtime or delivery errors')
         page.close()
+        simulator.close()
     b.close()
 (OUT/f'tutorial-{ENGINE}.json').write_text(json.dumps({'engine':ENGINE,'url':URL,'checks':checks},indent=2))
 print(f'PASS {len(checks)} tutorial checks in {ENGINE}',flush=True)
