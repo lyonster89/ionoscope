@@ -4,8 +4,8 @@ Run `python -m http.server 8000` in the repository root, then
 Tests local HTTP delivery, ES modules, offline fallbacks and representative UI.
 External data integrations are mocked; this does not certify live providers.
 """
-import json,os
-from playwright.sync_api import sync_playwright
+import json,os,re
+from playwright.sync_api import sync_playwright,expect
 URL=os.environ.get('IONOSCOPE_TEST_URL','http://127.0.0.1:8000/')
 
 
@@ -35,6 +35,7 @@ with sync_playwright() as p:
         page.goto(URL,wait_until='domcontentloaded',timeout=20000)
         page.locator('#worldMap canvas.offline-world-canvas').wait_for(timeout=12000)
         page.locator('#metricDistance').wait_for(state='visible')
+        expect(page.locator('#metricDistance')).to_have_text(re.compile(r'^[\d,]+$'),timeout=12000)
         page.wait_for_timeout(200)
         require(not errors,f'{width}px: no uncaught JS errors')
         require(not failed_local,f'{width}px: local HTTP resources served without 4xx/5xx')

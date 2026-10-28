@@ -460,6 +460,8 @@ function boot() {
     const observer=new ResizeObserver(requestRender);
     ['rayCanvas','hop1Canvas','hop2Canvas','hop3Canvas','skipCanvas','lobeCanvas','antennaElevationCanvas','antennaAzimuthCanvas'].forEach((id)=>observer.observe($(id)));
   }
-  requestRender();
+  // Populate telemetry before yielding: WebKit may defer the first animation
+  // frame even though the map and document have already become visible.
+  render();
 }
 boot();
