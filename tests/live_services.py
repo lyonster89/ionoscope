@@ -55,14 +55,23 @@ with sync_playwright() as p:
         maps.append(result); print('MAP',json.dumps(result),flush=True)
         assert result['loadedTiles']>0 or result['offlineCanvas']==1
     # Real Leaflet with tile requests failing must also restore a usable map.
-    page.route('**/*tile.openstreetmap.org/**',lambda r:r.abort())
-    page.route('**/*tile.opentopomap.org/**',lambda r:r.abort())
-    page.locator('#mapBasemap').select_option('vector')
-    page.locator('#mapBasemap').select_option('auto')
-    expect(page.locator('#worldMap canvas.offline-world-canvas')).to_be_visible(timeout=25000)
-    expect(page.locator('#mapBasemap')).to_have_value('vector')
-    maps.append({'requested':'auto with both tile hosts blocked','active':'vector','status':page.locator('#mapEngineStatus').inner_text()})
+    # Use a fresh context so previously decoded WebKit tile images cannot hide
+    # the outage by satisfying image loads from the in-memory resource cache.
+    outage=b.new_page(viewport={'width':1440,'height':900})
+    outage.on('pageerror',lambda e:errors.append(str(e)))
+    outage.route('**/*tile.openstreetmap.org/**',lambda r:r.abort())
+    outage.route('**/*tile.opentopomap.org/**',lambda r:r.abort())
+    outage.goto(URL,wait_until='networkidle',timeout=60000)
+    outage.locator('#mapBasemap').select_option('auto')
+    expect(outage.locator('#worldMap canvas.offline-world-canvas')).to_be_visible(timeout=25000)
+    expect(outage.locator('#mapBasemap')).to_have_value('vector')
+    maps.append({'requested':'auto with both tile hosts blocked','active':'vector','status':outage.locator('#mapEngineStatus').inner_text()})
+    outage.close()
     page.locator('#map').scroll_into_view_if_needed();page.screenshot(path=str(OUT/f'{ENGINE}-live-map.png'))
-    assert not errors,errors
-    (OUT/f'{ENGINE}-live.json').write_text(json.dumps({'engine':ENGINE,'url':URL,'providers':probes,'imports':ui_imports,'maps':maps,'errors':errors},indent=2))
+    # WebKit also emits its native CORS denial as pageerror for the explicitly
+    # probed optional backup. Keep it in evidence separately from JS exceptions.
+    service_errors=[e for e in errors if 'api.opentopodata.org/' in e and 'access control' in e]
+    runtime_errors=[e for e in errors if e not in service_errors]
+    assert not runtime_errors,runtime_errors
+    (OUT/f'{ENGINE}-live.json').write_text(json.dumps({'engine':ENGINE,'url':URL,'providers':probes,'imports':ui_imports,'maps':maps,'errors':runtime_errors,'serviceErrors':service_errors},indent=2))
     b.close()

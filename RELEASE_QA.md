@@ -1,44 +1,62 @@
-# IONOSCOPE v2.4 — production-preparation verification
+# IONOSCOPE v2.4 release verification — 2026-10-28
 
-## Release decision
+Repository: https://github.com/lyonster89/ionoscope
+Website: https://lyonster89.github.io/ionoscope/
 
-**Code quality gate: PASS locally. Public deployment gate: PENDING.**
-This is a GitHub Pages deployment candidate, not a certification that live third-party
-services or every target browser have been tested. The included GitHub Actions workflow
-blocks publication until the served-file browser tests pass in three browser engines.
-The authoring environment restricts browser navigation and internet connections,
-so the actual Pages run is required to establish deployment readiness.
+## Release gate
 
-## Source audit: identified fixes
+The GitHub Actions workflow requires Node regression tests, JavaScript syntax checks,
+and real HTTP acceptance tests in Chromium, Firefox and WebKit before publishing.
+Each engine exercises desktop (1440x900), tablet (768x1024), phone (390x844) and
+small phone (320x700). Browser JSON results and screenshots are retained as an
+Actions artifact. Only website assets are published; tests and reports stay in Git.
 
-| Finding | Action | Verification |
-|---|---|---|
-| Old HTTP/UI checks used injected Blob modules instead of actual Pages-style module URLs | Added a real-HTTP browser acceptance test and GitHub Actions deployment gate | Test script and workflow checked into repository; run on push |
-| Async scientific import could overwrite a changed station/date or a later manual edit | Abort per-category requests and reject results whose scenario context or generation has changed | New race-condition regression tests |
-| Overlapping imports could apply stale results in the wrong order | Unique generation IDs and per-category controllers | Out-of-order completion test |
-| Cancel did not always cover all in-progress category requests | Abort all tracked controllers and batch signal | Existing cancel test and additional logic review |
-| Online tile providers could leave a partly blank map in manual mode | Restore offline vector map when online basemap is unusable | Browser missing-Leaftlet fallback test |
-| Map actions appeared disabled due to native browser button styling | Explicit colors, contrast and backgrounds for buttons | Visual review at desktop and phone sizes |
-| Preferred source settings could contain duplicate entries after corrupted storage | Normalize and deduplicate permitted source IDs | Settings regression test |
-| City and Maidenhead grid search did not respond to Enter | Add Enter-to-submit keyboard handling | Source/keyboard implementation review |
-| Coordinate field edits updated the path but not explanatory change telemetry | Capture previous path and changed field before re-render | Source review and existing control behavior tests |
-| Importing or loading saved scenarios could leave old import status/provenance visible | Reset import status on scenario replacement | Source review |
+Publication is followed by separate testing of the actual HTTPS website. A successful
+build alone is not a declaration that the published site has been verified.
 
-## Local results
+## Fixes from this audit
 
-- **59/59** automated Node tests passed (physics, geometry, providers, validation, race safety, local file integrity).
-- **37/37** Chromium UI checks passed using repository module text loaded as browser Blob modules; checks at 1440, 768, 390 and 320px.
-- All JavaScript modules pass `node --check`.
-- Reviewed actual desktop and phone screenshots of the offline map.
-- No browser JavaScript exceptions observed in the offline UI checks.
-- All relative references to local website resources resolve in static integrity tests.
+- Correct UTC startup minutes, including a 23:59 regression scenario.
+- Validate shared URL scenarios atomically, including date, bounds and integer hops.
+- Reject invalid calendar dates and dates outside the supported 1900–2100 range.
+- Reject missing/empty/implausible terrain measurements and empty geocoding coordinates.
+- Normalize zone-less NOAA observation timestamps to UTC before age checks.
+- Normalize monthly observation dates consistently across browser engines.
+- Use SVG for online Leaflet geometry to avoid repainting a disposed canvas during fallback.
+- Remove the Open Topo Data backup from selectable providers after live browser CORS
+  failures in all three engines. Open-Meteo terrain remains available. Failure retains
+  prior values with explicit stale/unavailable status; no observation is invented.
+- Correct the older WebKit browser test to scroll the canvas into view before clicking.
+- Expand repeatable browser coverage to all antenna types, map placement and swap,
+  keyboard grid and geocoding search, RF power changes, sliders and bounds, import
+  provenance, malformed responses, automatic and approved fallback, scenario files,
+  saved snapshots, themes, missing CDNs and invalid shared scenarios.
 
-## Production gate, still required
+## Verification commands
 
-1. Enable **GitHub Actions** (not branch publishing) for GitHub Pages.
-2. Confirm workflow success: Node tests, static HTTP serving, Chromium, Firefox and WebKit browser checks, successful Pages publish.
-3. On the actual public HTTPS URL, manually confirm tile providers, NOAA and geocoding availability and attribution; if a provider denies browser access, use manual/offline modes or a correctly configured provider/proxy.
-4. Verify keyboard/tab interactions and contrast with assistive technology on target devices. Full screen-reader audit has not been completed here.
-5. For operating decisions involving safety or mission-critical communications, use a validated HF prediction product or measurements rather than this educational heuristic.
+    npm test
+    python -m playwright install chromium firefox webkit
+    python -m http.server 8000 --bind 127.0.0.1
+    python tests/http_e2e.py
+    python tests/release_browser.py
+    python tests/live_services.py
 
-**No blanket production-ready claim is made until the public deployment and its external integrations have passed these checks.**
+Repeat with IONOSCOPE_BROWSER set to firefox and webkit. Set IONOSCOPE_TEST_URL to
+https://lyonster89.github.io/ionoscope/ for published-site verification; set
+IONOSCOPE_RESULTS to an evidence directory. The deterministic suite blocks external
+CDNs and supplies explicit service fixtures. The live suite uses actual browser
+fetches, parses every configured endpoint, imports current SFI/Kp/terrain and a
+completed historical month's SSN through the UI, loads each online basemap, and
+blocks both tile hosts in a fresh browser context to verify automatic offline recovery.
+
+## Product scope
+
+This is an educational heuristic, not an operationally validated HF prediction model.
+Planetary A-index, TEC and D-RAP assimilation remain explicitly unsupported, with
+manual/simulation values clearly distinguished from observations. The current month's
+monthly sunspot mean may not yet exist; select a completed month or retain a manual
+scenario. Terrain is contextual and does not alter modeled HF skywave attenuation.
+Browser viewport emulation does not replace physical-device or assistive-technology testing.
+
+The final testing report supplied with this deployment records the actual published
+revision, completed run, live provider results and remaining limitations.

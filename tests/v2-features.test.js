@@ -48,7 +48,8 @@ test('changing TX orientation or receiver model changes the computed budget',()=
  assert.notEqual(a.rxDbm,c.rxDbm);
 });
 test('source registry exposes alternate compatible providers for important categories',()=>{
- for(const cat of ['sfi','kp','terrain'])assert.ok(SOURCE_PROVIDERS[cat].length>=2);
+ for(const cat of ['sfi','kp'])assert.ok(SOURCE_PROVIDERS[cat].length>=2);
+ assert.equal(SOURCE_PROVIDERS.terrain.length,1,'Only the verified browser-readable terrain service is offered');
  const cfg=defaultSourceSettings();const changed=normalizeSettings({mode:'ask',categories:{kp:{order:['swpc-kp-3h','swpc-kp-1m'],disabled:['swpc-kp-1m']}}});
  assert.equal(changed.mode,'ask');assert.equal(changed.categories.kp.order[0],'swpc-kp-3h');assert.ok(changed.categories.kp.disabled.includes('swpc-kp-1m'));
  assert.deepEqual(cfg.categories.kp.disabled,[]);

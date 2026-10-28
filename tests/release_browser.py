@@ -107,6 +107,9 @@ with sync_playwright() as p:
         page.locator('#sourceMode').select_option('automatic'); imp(page,'Station terrain')
         expect(card(page,'Station terrain')).to_contain_text('IMPORTED')
         check(True,f'{width}: terrain import')
+        mode['terrain']='bad'; imp(page,'Station terrain')
+        expect(card(page,'Station terrain')).to_contain_text('STALE')
+        check(True,f'{width}: invalid terrain preserves previous data with stale warning')
         # Export/download and import are real browser file operations.
         with page.expect_download() as download:
             page.locator('#exportScenarioBtn').click()

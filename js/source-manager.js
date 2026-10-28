@@ -25,7 +25,6 @@ export const SOURCE_PROVIDERS = {
  ],
  terrain:[
   {id:'openmeteo-elev',label:'Open-Meteo / Copernicus DEM',type:'terrain model',url:'https://api.open-meteo.com/v1/elevation',maxAgeHours:null},
-  {id:'opentopo-elev',label:'Open Topo Data · SRTM90m',type:'terrain model',url:'https://api.opentopodata.org/v1/srtm90m',maxAgeHours:null},
  ],
  a:[],tec:[],absorption:[],
 };

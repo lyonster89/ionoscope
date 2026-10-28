@@ -1,3 +1,5 @@
+> Deployment and current verification: see [RELEASE_QA.md](RELEASE_QA.md). The historical feature notes below predate the final release audit. Open Topo Data was removed because its browser requests fail CORS; Open-Meteo supplies terrain.
+
 # IONOSCOPE 2.4 — HF Propagation Learning Hub & Interactive RF Path Lab
 
 **A static, GitHub Pages-compatible HF radio propagation laboratory.** Version 2 extends the original Academy, Ray Lab, Link Budget and Band Planner with an interactive world map, independent transmitter/receiver antennas, date-aware solar geometry, dual slider/number controls, scenario comparison, and browser-based data-provider selection with fallback. **No server-side runtime, API keys, or compilation is required; a GitHub Actions verification gate is included for safe publication.**
