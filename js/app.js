@@ -72,7 +72,16 @@ function validCoordinates() {
 function requestRender() {
   if (scheduled) return;
   scheduled = true;
-  requestAnimationFrame(() => { scheduled = false; render(); });
+  // Some WebKit/background contexts suspend animation frames. Keep controls
+  // responsive there too, while still coalescing normal foreground updates.
+  let frame=null,timeout=null;
+  const flush=()=>{
+    if(!scheduled)return;
+    scheduled=false;clearTimeout(timeout);if(frame!==null)cancelAnimationFrame(frame);
+    render();
+  };
+  timeout=setTimeout(flush,100);
+  frame=requestAnimationFrame(flush);
 }
 function setState(key, value) {
   if (!allowedFields.includes(key)) return;
