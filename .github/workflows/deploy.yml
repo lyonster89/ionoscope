@@ -35,11 +35,11 @@ jobs:
           cat /tmp/ionoscope-http.log
           exit 1
       - name: Chromium full HTTP acceptance test
-        run: python tests/http_e2e.py && python tests/release_browser.py
+        run: python tests/http_e2e.py && python tests/release_browser.py && python tests/tutorial_browser.py
       - name: Firefox full HTTP acceptance test
-        run: IONOSCOPE_BROWSER=firefox python tests/http_e2e.py && IONOSCOPE_BROWSER=firefox python tests/release_browser.py
+        run: IONOSCOPE_BROWSER=firefox python tests/http_e2e.py && IONOSCOPE_BROWSER=firefox python tests/release_browser.py && IONOSCOPE_BROWSER=firefox python tests/tutorial_browser.py
       - name: WebKit full HTTP acceptance test
-        run: IONOSCOPE_BROWSER=webkit python tests/http_e2e.py && IONOSCOPE_BROWSER=webkit python tests/release_browser.py
+        run: IONOSCOPE_BROWSER=webkit python tests/http_e2e.py && IONOSCOPE_BROWSER=webkit python tests/release_browser.py && IONOSCOPE_BROWSER=webkit python tests/tutorial_browser.py
       - name: Save browser evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -49,7 +49,7 @@ jobs:
       - name: Stage website files
         run: |
           mkdir -p _site
-          cp index.html LICENSE _site/
+          cp index.html tutorial.html LICENSE _site/
           cp -r assets css js _site/
       - name: Set up GitHub Pages
         uses: actions/configure-pages@v5

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08111e">
+<meta name="description" content="Step-by-step IONOSCOPE tutorials: choose a route, compare bands and antennas, explore UTC windows, import observations, and save scenarios.">
+<title>Practical tutorial // IONOSCOPE</title>
+<link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+<link rel="stylesheet" href="./css/tutorial.css?v=2.4.1">
+</head>
+<body>
+<a class="skip-link" href="#tutorial">Skip to tutorial</a>
+<header class="guide-header"><a class="brand" href="./index.html">IONOSCOPE<span>/</span><small>HF PROPAGATION LAB</small></a><a class="simulator-link" href="./index.html" target="_blank" rel="noopener">Open simulator <span aria-hidden="true">↗</span><span class="sr-only"> in a new tab</span></a></header>
+<div class="guide-layout">
+<aside class="contents"><details open><summary>IN THIS GUIDE</summary><nav aria-label="Tutorial contents">
+<a href="#station">01 <span>Set up your station</span></a>
+<a href="#regional">02 <span>Compare regional bands</span></a>
+<a href="#timing">03 <span>Find a time window</span></a>
+<a href="#nvis">04 <span>Explore nearby paths</span></a>
+<a href="#antennas">05 <span>Compare antennas</span></a>
+<a href="#power">06 <span>Power, loss &amp; mode</span></a>
+<a href="#distance">07 <span>Explore longer paths</span></a>
+<a href="#observations">08 <span>Import observations</span></a>
+<a href="#save">09 <span>Save your experiments</span></a>
+</nav></details><p class="side-note">Keep the simulator open in a second tab and follow along at your own pace.</p></aside>
+<main id="tutorial">
+<div class="guide-intro"><p class="eyebrow">FIELD GUIDE / STEP BY STEP</p><h1>Turn curiosity into<br><em>a useful experiment.</em></h1><p class="lead">Using IONOSCOPE for practical radio situations.</p><p>Use it to answer questions such as <strong>“What should I compare or try next?”</strong> Its results are educational estimates, so confirm promising combinations by listening, checking signals, and making contacts. The example frequencies below are simulator inputs, not operating-frequency authorizations.</p><a class="start-link" href="#station">Start with your station <span aria-hidden="true">↓</span></a></div>
+
+<section id="station" aria-labelledby="station-title"><p class="step-label">01 / YOUR STARTING POINT</p><h2 id="station-title">Set up your station and destination</h2><p>Do this before working through any example.</p><ol>
+<li>Open <strong>World path map</strong>.</li>
+<li>Enter your location under <strong>TRANSMITTER SEARCH</strong>, then press <strong>SEARCH</strong>. Alternatively, enter your Maidenhead locator and press <strong>SET GRID</strong>.</li>
+<li>Set your destination under <strong>RECEIVER SEARCH</strong>.</li>
+<li>Check the displayed TX and RX coordinates. City searches may select a city center rather than your actual station.</li>
+<li>Press <strong>FIT PATH</strong>. Read the distance and initial bearing beneath the map.</li>
+<li>Open <strong>Antenna studio</strong> and select the antennas at both ends. Enter their approximate installation heights.</li>
+<li>Open <strong>Link budget</strong>. Set transmitter power, feedline loss, receiver noise environment, and operating mode.</li>
+<li>For an uncalibrated comparison, set the controls labeled <strong>TX antenna gain</strong> and <strong>RX antenna gain</strong> to <strong>0 dBi</strong>. These are additional corrections; the selected antenna models already contribute their own directional gain.</li>
+</ol><aside class="note"><strong>Map tip</strong><p>Select <strong>PLACE TX</strong> or <strong>PLACE RX</strong>, then click the map to reposition that station. You can also drag markers. The offline world map works without external tiles.</p></aside><a class="try-link" href="./index.html#map" target="_blank" rel="noopener">Open world path map ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="regional" aria-labelledby="regional-title"><p class="step-label">02 / A REGIONAL CONTACT</p><h2 id="regional-title">Find bands to investigate</h2><p class="situation"><strong>Situation:</strong> You want to contact someone roughly a state or two away.</p><p>For a repeatable demonstration, select <strong>SEA → DEN</strong> under <strong>RF path simulator → Station geometry</strong>.</p><ol>
+<li>Set your intended UTC date and time under <strong>Propagation academy → Manipulate space weather</strong>.</li>
+<li>Start with <strong>F2</strong>, <strong>300 km</strong> virtual height, and <strong>1 hop</strong> under <strong>RF path simulator</strong>. Treat these as model assumptions.</li>
+<li>Open <strong>Band planner</strong> and inspect the band condition matrix.</li>
+<li>Compare several rows—for example, <strong>40m</strong>, <strong>20m</strong>, and <strong>15m</strong>. Read both their status and modeled mode margin.</li>
+<li>Click a band row to set its frequency.</li>
+<li>Return to <strong>RF path simulator</strong>. Find <strong>Required elevation</strong> in the ray telemetry.</li>
+<li>Set <strong>Takeoff elevation</strong> close to that value.</li>
+<li>Read the main path diagnosis and the link budget.</li>
+</ol><aside class="note"><strong>Two different aiming angles</strong><p>The band matrix evaluates each band using an automatically calculated aiming angle. Clicking a row sets the frequency; it does <strong>not</strong> automatically set the main simulator’s takeoff elevation. That can explain an “open” band row alongside an undershooting main ray.</p></aside><p class="takeaway"><strong>Practical takeaway:</strong> Build a shortlist of bands to listen to. Favor combinations that show usable geometry and some modeled margin, then check actual activity.</p><a class="try-link" href="./index.html#planner" target="_blank" rel="noopener">Open band planner ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="timing" aria-labelledby="timing-title"><p class="step-label">03 / CHOOSING A TIME</p><h2 id="timing-title">Explore when to attempt the same contact</h2><p class="situation"><strong>Situation:</strong> You can operate at several times and want to compare them.</p><ol>
+<li>Finish setting up your route, antennas, power, and mode.</li>
+<li>Open <strong>Band planner → LUF / FOT / MUF over UTC</strong>.</li>
+<li>Read the three curves: <strong>LUF</strong> is the model’s lower usable-frequency boundary; <strong>MUF</strong> is its upper usable-frequency boundary for the assumed path; <strong>FOT</strong> is a planning reference calculated at about 85% of MUF.</li>
+<li>Look for times when your candidate frequency lies between LUF and MUF.</li>
+<li>Set the <strong>UTC TIME</strong> field to one candidate time.</li>
+<li>Record the path assessment and mode margin.</li>
+<li>Try another time while keeping the other settings unchanged.</li>
+<li>Use <strong>PLAY 24H</strong> to watch the modeled day/night changes, then pause at interesting times.</li>
+</ol><p>Keep your local-to-UTC conversion straight, especially when the UTC date differs from your local date.</p><p class="takeaway"><strong>Practical takeaway:</strong> Identify time windows worth investigating. Changing the simulation time does not fetch a forecast of future solar conditions; the selected solar inputs remain assumptions unless you change them.</p><a class="try-link" href="./index.html#planner" target="_blank" rel="noopener">Explore the UTC window ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="nvis" aria-labelledby="nvis-title"><p class="step-label">04 / NEARBY STATIONS</p><h2 id="nvis-title">Explore a short-distance, high-angle path</h2><p class="situation"><strong>Situation:</strong> You want to understand why a nearby station might be difficult to reach on a band that works farther away.</p><p>Try this demonstration route using the coordinate fields in <strong>RF path simulator</strong>:</p><div class="table-wrap"><table><caption>Demonstration station coordinates</caption><thead><tr><th scope="col">Station</th><th scope="col">Latitude</th><th scope="col">Longitude</th></tr></thead><tbody><tr><th scope="row">Sacramento</th><td>38.5816</td><td>−121.4944</td></tr><tr><th scope="row">Fresno</th><td>36.7378</td><td>−119.7871</td></tr></tbody></table></div><ol>
+<li>Select <strong>1 hop</strong>, <strong>F2</strong>, and <strong>300 km</strong> virtual height.</li>
+<li>In <strong>Antenna studio</strong>, choose <strong>Low horizontal NVIS antenna</strong> at both ends.</li>
+<li>Enter a plausible installation height—for example, <strong>5 m</strong> for this experiment.</li>
+<li>Read <strong>Required elevation</strong> and set the main <strong>Takeoff elevation</strong> close to it.</li>
+<li>Compare simulator inputs such as <strong>3.65 MHz</strong> and <strong>7.15 MHz</strong>.</li>
+<li>Watch the path diagnosis. Does the ray return, escape, or fall below the modeled lower-frequency boundary?</li>
+<li>Change UTC time and repeat.</li>
+<li>Compare the NVIS antenna with a vertical while holding everything else fixed.</li>
+</ol><p class="takeaway"><strong>Practical takeaway:</strong> Short-distance skywave requires a suitable combination of frequency, ionosphere, and high-angle radiation. Adding power alone cannot make an escaping ray return.</p><a class="try-link" href="./index.html#raylab" target="_blank" rel="noopener">Open RF path simulator ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="antennas" aria-labelledby="antennas-title"><p class="step-label">05 / INSTALLATION CHOICES</p><h2 id="antennas-title">Compare antennas before changing your installation</h2><p class="situation"><strong>Situation:</strong> You want to compare raising a dipole, rotating it, or trying another antenna.</p><ol>
+<li>Choose one route, frequency, UTC time, and mode.</li>
+<li>Set takeoff elevation near the route’s <strong>Required elevation</strong>.</li>
+<li>Enter your current antenna type and height.</li>
+<li>Open <strong>Compare scenarios</strong> and press <strong>CAPTURE BASELINE</strong>.</li>
+<li>Change <strong>one variable</strong>—for example, raise the TX dipole from <strong>6 m</strong> to <strong>12 m</strong>.</li>
+<li>Read the <strong>BASELINE</strong>, <strong>CURRENT</strong>, and received-signal difference.</li>
+<li>Inspect the elevation pattern in <strong>Antenna studio</strong>.</li>
+<li>Restore the original height, then try an orientation change as a separate comparison.</li>
+</ol><p>For a <strong>Yagi</strong>, compare its orientation with the target bearing shown beneath the map. In the simulator’s dipole model, orientation represents the wire direction, with stronger response broadside to it.</p><p class="takeaway"><strong>Practical takeaway:</strong> Compare gain toward the destination at the relevant elevation. Raising an antenna can move lobes and nulls; the modeled response is not always a steady improvement.</p><a class="try-link" href="./index.html#antenna" target="_blank" rel="noopener">Open antenna studio ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="power" aria-labelledby="power-title"><p class="step-label">06 / A WEAK SIGNAL</p><h2 id="power-title">Compare more power, less loss, and a different mode</h2><p class="situation"><strong>Situation:</strong> A path appears geometrically possible, but its modeled signal is weak.</p><ol>
+<li>Set your actual power and feedline loss in <strong>Link budget</strong>.</li>
+<li>Choose the receiver’s approximate noise environment.</li>
+<li>Capture a baseline.</li>
+<li>Double transmitter power—for example, <strong>50 W → 100 W</strong>.</li>
+<li>Observe the received-power increase: approximately <strong>3 dB</strong>.</li>
+<li>Restore the original power.</li>
+<li>Reduce feedline loss by <strong>1 dB</strong>. The modeled received power should improve by about <strong>1 dB</strong>.</li>
+<li>Restore that setting, then compare <strong>SSB</strong>, <strong>CW</strong>, and <strong>FT8</strong>.</li>
+<li>Compare the required mode margin rather than only the received-power number.</li>
+</ol><p>Changing mode changes the model’s decoding threshold. It does not increase transmitted power or repair unsuitable path geometry.</p><p class="takeaway"><strong>Practical takeaway:</strong> Separate a weak-signal problem from a frequency or geometry problem before deciding what to change.</p><a class="try-link" href="./index.html#budget" target="_blank" rel="noopener">Open link budget ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="distance" aria-labelledby="distance-title"><p class="step-label">07 / ACROSS THE ATLANTIC</p><h2 id="distance-title">Explore a longer-distance path</h2><p class="situation"><strong>Situation:</strong> You want to investigate a transatlantic route.</p><ol>
+<li>Set TX to London and RX to New York using the map searches.</li>
+<li>Select <strong>F2</strong> and <strong>300 km</strong> virtual height.</li>
+<li>Inspect the required elevation with <strong>1 hop</strong>.</li>
+<li>If it reports <strong>No solution</strong>, try <strong>2 hops</strong>, then <strong>3</strong>.</li>
+<li>For a valid configuration, set takeoff elevation near the required value.</li>
+<li>Compare bands in <strong>Band planner</strong>.</li>
+<li>Compare UTC times and inspect the day/night boundary on the map.</li>
+<li>Watch how additional hops affect the link budget and path diagnosis.</li>
+</ol><p class="takeaway"><strong>Practical takeaway:</strong> More hops can make the assumed geometry possible while adding losses. In this simplified model, increasing hop count does not automatically improve the connection.</p><a class="try-link" href="./index.html#map" target="_blank" rel="noopener">Set a longer route ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="observations" aria-labelledby="observations-title"><p class="step-label">08 / REAL OBSERVATIONS</p><h2 id="observations-title">Import observations and understand their status</h2><p class="situation"><strong>Situation:</strong> You want to replace some manual solar assumptions with available observations.</p><ol>
+<li>Press <strong>TODAY</strong> in the date/time controls.</li>
+<li>Open <strong>Data source manager</strong>.</li>
+<li>Select <strong>Automatic</strong> fallback mode.</li>
+<li>Press <strong>IMPORT</strong> beside <strong>10.7 cm solar flux</strong> and <strong>Planetary Kp</strong>.</li>
+<li>Check for <strong>IMPORTED</strong>, the provider name, and the observation timestamp.</li>
+<li>Revisit your band comparison to see how the changed inputs affect it.</li>
+<li>Import <strong>Station terrain elevation</strong> if you want elevation context. It does not alter the skywave attenuation model.</li>
+<li>For monthly sunspots, select a completed historical month before importing. The current month’s mean may not yet be available.</li>
+</ol><div class="table-wrap"><table><caption>Choose how failed requests are handled</caption><thead><tr><th scope="col">Mode</th><th scope="col">What happens after a provider fails</th></tr></thead><tbody><tr><th scope="row">Automatic</th><td>Tries the next enabled compatible provider, where one exists.</td></tr><tr><th scope="row">Manual</th><td>Uses the preferred provider only.</td></tr><tr><th scope="row">Ask before switching</th><td>Offers an alternative for you to approve explicitly.</td></tr></tbody></table></div><aside class="note"><strong>Watch the status</strong><p>A <strong>STALE</strong> status means the earlier value remains in the scenario but should not be treated as a fresh observation. Changing a date, location, or imported value can also invalidate its provenance.</p></aside><a class="try-link" href="./index.html#sources" target="_blank" rel="noopener">Open data source manager ↗<span class="sr-only"> in a new tab</span></a></section>
+
+<section id="save" aria-labelledby="save-title"><p class="step-label">09 / KEEP WHAT YOU LEARN</p><h2 id="save-title">Save a useful comparison</h2><ol>
+<li>Use <strong>CAPTURE BASELINE</strong> before changing a variable.</li>
+<li>Use <strong>SAVE SNAPSHOT</strong> to keep a scenario in that browser.</li>
+<li>Use <strong>EXPORT JSON</strong> for a portable copy.</li>
+<li>Use <strong>IMPORT JSON</strong> to restore an exported scenario.</li>
+<li>Use the top-bar share button to copy a scenario URL. Treat imported-source status as something to verify again after opening it elsewhere.</li>
+</ol><p>For practical experiments, keep a small log:</p><div class="table-wrap"><table><caption>Your on-air comparison log</caption><thead><tr><th scope="col">Route and UTC time</th><th scope="col">Band / mode</th><th scope="col">Antenna and power</th><th scope="col">Modeled result</th><th scope="col">What you actually heard</th></tr></thead><tbody><tr><td>Record your route</td><td>Record your settings</td><td>Record your station</td><td>Note the estimate</td><td>Compare with reception</td></tr></tbody></table></div><p class="takeaway"><strong>The most useful habit:</strong> Change one variable at a time, record what the simulator predicts, and compare it with actual reception.</p><a class="try-link" href="./index.html#compare" target="_blank" rel="noopener">Open scenario comparison ↗<span class="sr-only"> in a new tab</span></a></section>
+<footer><a href="#tutorial">Back to the beginning ↑</a><a href="./index.html">Return to simulator →</a><p>IONOSCOPE / Practical field guide · Educational HF propagation model</p></footer>
+</main></div>
+</body></html>
